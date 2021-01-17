@@ -38,13 +38,7 @@ class WeatherFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("city name in fragment",viewModel.placeName)
-        val bundle = this.arguments
-        if (bundle?.getString("place_name") != ""){
-            viewModel.placeName = bundle?.getString("place_name").toString()
-            viewModel.locationLat = bundle?.getString("location_lat").toString()
-            viewModel.locationLng = bundle?.getString("location_lng").toString()
-        }
+        Log.d("viewmodel in fragment",viewModel.placeName)
         activity?.window?.statusBarColor = Color.TRANSPARENT
 
 
