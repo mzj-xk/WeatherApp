@@ -25,7 +25,12 @@ class PlaceAdapter (private val fragment: PlaceFragment, private val placeList: 
         holder.itemView.setOnClickListener {
             val position = holder.adapterPosition
             val place = placeList[position]
-            val intent = Intent(parent.context, MainActivity::class.java)
+            val intent = Intent(parent.context, MainActivity::class.java).apply {
+                putExtra("fromPlaceFragment",true)
+                putExtra("placeName",place.name)
+                putExtra("lat",place.location.lat)
+                putExtra("lng",place.location.lng)
+            }
             fragment.startActivity(intent)
 
         }

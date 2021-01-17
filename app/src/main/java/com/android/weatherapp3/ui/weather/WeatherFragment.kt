@@ -50,6 +50,17 @@ class WeatherFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("bundle is null?",arguments.toString())
+        Log.d("bundle place name",arguments?.getString("placeName").toString())
+
+        if (arguments != null){
+            viewModel.placeName = arguments!!.getString("placeName").toString()
+            viewModel.locationLat = arguments!!.getString("lat").toString()
+            viewModel.locationLng = arguments!!.getString("lng").toString()
+        }
+
+        refreshWeather()
+
         viewModel.weatherLiveData.observe(this, {
             val weather = it.getOrNull()
             if (weather != null) {
@@ -61,7 +72,7 @@ class WeatherFragment : Fragment(){
             }
             swipeRefresh?.isRefreshing = false
         })
-        refreshWeather()
+
 
         return inflater.inflate(R.layout.weather, container, false)
     }
