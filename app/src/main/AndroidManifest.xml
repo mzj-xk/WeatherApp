@@ -24,6 +24,11 @@
             android:theme="@style/AppTheme">
 
         </activity>
+
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="fc770011e1d219eb67976aa0b2bdf6e3"/>
+        <service
+            android:name="com.amap.api.location.APSService"
+            android:foregroundServiceType="location" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

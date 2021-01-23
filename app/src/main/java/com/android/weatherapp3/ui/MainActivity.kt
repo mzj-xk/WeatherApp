@@ -1,28 +1,43 @@
 package com.android.weatherapp3.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.amap.api.location.AMapLocation
+import com.amap.api.location.AMapLocationClient
+import com.amap.api.location.AMapLocationClientOption
+import com.amap.api.location.AMapLocationListener
 import com.android.weatherapp3.R
 import com.android.weatherapp3.ui.place.PlaceFragment
 import com.android.weatherapp3.ui.weather.WeatherFragment
 import com.android.weatherapp3.ui.weather.WeatherViewModel
 import kotlinx.android.synthetic.main.bottom_bar.*
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , AMapLocationListener{
 
-    private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
+//    var mlocationClient : AMapLocationClient ?= null
+//    var mlocationOption : AMapLocationClientOption ?= null
+
+    lateinit var mlocationClient : AMapLocationClient
+    private lateinit var mlocationOption : AMapLocationClientOption
+
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("activity","aaa")
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+        showLocation()
+        Log.d("MainActivity","MainActivity onCreate")
         setContentView(R.layout.activity_main)
 
 
@@ -57,9 +72,83 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    private fun showLocation(){
+        try {
+            mlocationClient = AMapLocationClient(this)
+            mlocationOption = AMapLocationClientOption()
+            mlocationClient.setLocationListener(this)
+            //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
+            mlocationOption.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+            //  设置定位间隔 (ms)
+            mlocationOption.interval = 5000
+            //  设置定位参数
+            mlocationClient.setLocationOption(mlocationOption)
+            //  启动定位
+            mlocationClient.startLocation()
+
+        }catch (e: Exception){
+
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    override fun onLocationChanged(amapLocation: AMapLocation?) {
+        try {
+            if (amapLocation?.errorCode == 0) {
+                //定位成功回调信息，设置相关消息
+                //获取当前定位结果来源，如网络定位结果，详见定位类型表
+                Log.i("定位类型", amapLocation.locationType.toString() + "")
+                Log.i("获取纬度", amapLocation.latitude.toString() + "")
+                Log.i("获取经度", amapLocation.longitude.toString() + "")
+                Log.i("获取精度信息", amapLocation.accuracy.toString() + "")
+                //如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
+                Log.i("地址", amapLocation.address)
+                Log.i("国家信息", amapLocation.country)
+                Log.i("省信息", amapLocation.province)
+                Log.i("城市信息", amapLocation.city)
+                Log.i("城区信息", amapLocation.district)
+                Log.i("街道信息", amapLocation.street)
+                Log.i("街道门牌号信息", amapLocation.streetNum)
+                Log.i("城市编码", amapLocation.cityCode)
+                Log.i("地区编码", amapLocation.adCode)
+                Log.i("获取当前定位点的AOI信息", amapLocation.aoiName)
+                Log.i("获取当前室内定位的建筑物Id", amapLocation.buildingId)
+                Log.i("获取当前室内定位的楼层", amapLocation.floor)
+                Log.i("获取GPS的当前状态", amapLocation.gpsAccuracyStatus.toString() + "")
+
+                //获取定位时间
+                val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val date = Date(amapLocation.time)
+                Log.i("获取定位时间", df.format(date))
 
 
+                // 停止定位
+                mlocationClient.stopLocation()
+            } else {
+                //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                Log.e("AmapError", "location Error, ErrCode:"
+                        + amapLocation?.errorCode + ", errInfo:"
+                        + amapLocation?.errorInfo)
+            }
+        } catch (e: Exception) {
+        }
+    }
 
+    /**
+     * 销毁定位
+     */
+    private fun destroyLocation() {
+        mlocationClient.onDestroy()
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyLocation()
+    }
+
+    companion object{
+
+    }
 }
+
 
