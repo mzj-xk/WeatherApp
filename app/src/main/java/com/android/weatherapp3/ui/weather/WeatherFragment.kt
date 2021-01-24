@@ -32,7 +32,10 @@ import java.util.*
 
 class WeatherFragment : Fragment(){
 
-    private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
+    //  这里使用 requireActivity() 参数表明创建的 ViewModel 为同一个
+    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(WeatherViewModel::class.java) }
+
+//    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(WeatherViewModel::class.java) }
 
 
 
@@ -70,7 +73,7 @@ class WeatherFragment : Fragment(){
                 Toast.makeText(context, "无法成功获取天气信息", Toast.LENGTH_SHORT).show()
                 it.exceptionOrNull()?.printStackTrace()
             }
-            swipeRefresh?.isRefreshing = false
+//            swipeRefresh?.isRefreshing = false
         })
 
 
@@ -82,7 +85,7 @@ class WeatherFragment : Fragment(){
         placeName.text = viewModel.placeName
         val realtime = weather.realtime
         val daily = weather.daily
-
+        line.visibility = View.VISIBLE
         val currentTempText = "${realtime.temperature.toInt()} ℃"
         currentTemp.text = currentTempText
         currentSky.text = getSky(realtime.skycon).info

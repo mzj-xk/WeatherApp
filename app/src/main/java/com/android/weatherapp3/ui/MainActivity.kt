@@ -22,12 +22,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() , AMapLocationListener{
-
+    private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
 //    var mlocationClient : AMapLocationClient ?= null
 //    var mlocationOption : AMapLocationClientOption ?= null
 
     lateinit var mlocationClient : AMapLocationClient
     private lateinit var mlocationOption : AMapLocationClientOption
+    private lateinit var bundle: Bundle
 
 
     @SuppressLint("ResourceAsColor")
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
-        showLocation()
+
         Log.d("MainActivity","MainActivity onCreate")
         setContentView(R.layout.activity_main)
 
@@ -51,16 +52,19 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
 
         Log.d("intent", intent.extras.toString())
 
-        var bundle : Bundle ?= null
-       if (intent.extras != null){
+
+        if (intent.extras != null){
             bundle = Bundle().apply {
                putString("placeName",intent.getStringExtra("placeName"))
                putString("lat", intent.getStringExtra("lat"))
                putString("lng", intent.getStringExtra("lng"))
            }
-       }
+           replaceFragment(WeatherFragment(), bundle)
+       }else{
+            showLocation()
+        }
 
-        replaceFragment(WeatherFragment(), bundle)
+
     }
 
     private fun replaceFragment(fragment: Fragment, bundle: Bundle? =null) {
@@ -120,6 +124,13 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                 val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val date = Date(amapLocation.time)
                 Log.i("获取定位时间", df.format(date))
+
+                bundle = Bundle().apply {
+                    putString("placeName",amapLocation.city)
+                    putString("lat", amapLocation.latitude.toString())
+                    putString("lng", amapLocation.longitude.toString())
+                }
+                replaceFragment(WeatherFragment(), bundle)
 
 
                 // 停止定位
