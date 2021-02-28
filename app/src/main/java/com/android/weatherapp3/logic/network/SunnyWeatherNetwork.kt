@@ -1,4 +1,5 @@
 package com.android.weatherapp3.logic.network
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,6 +14,8 @@ object SunnyWeatherNetwork {
 
     private val weatherService = ServiceCreator.create(WeatherService::class.java)
 
+    private val aiService = AiServiceCreator.create(AiService::class.java)
+
     suspend fun getDailyWeather(lng: String, lat: String) =
         weatherService.getDailyWeather(lng, lat).await()
 
@@ -24,6 +27,9 @@ object SunnyWeatherNetwork {
 
     suspend fun searchPlaces(query: String) =
         placeService.searchPlaces(query).await()
+
+    suspend fun getAiMessage(query: String) =
+        aiService.getAiMessage(query).await()
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->

@@ -21,15 +21,15 @@
         android:layout_height="wrap_content"
         android:text="天气"
         android:textSize="30dp"
-        app:layout_constraintEnd_toStartOf="@+id/eyeBtn"
+        app:layout_constraintEnd_toStartOf="@+id/aiBtn"
         app:layout_constraintStart_toEndOf="@+id/searchBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/eyeBtn"
+        android:id="@+id/aiBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开眼"
+        android:text="AI"
         android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -1,10 +1,8 @@
 package com.android.weatherapp3.ui.weather
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +24,7 @@ import java.util.*
 
 class WeatherFragment : Fragment(){
 
-    //  这里使用 requireActivity() 参数表明创建的 ViewModel 为同一个
-    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(WeatherViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
 
 //    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(WeatherViewModel::class.java) }
 

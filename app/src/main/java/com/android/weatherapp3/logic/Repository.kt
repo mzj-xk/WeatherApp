@@ -4,6 +4,7 @@ package com.android.weatherapp3.logic
 
 import android.util.Log
 import androidx.lifecycle.liveData
+import com.android.weatherapp3.logic.model.AiResponse
 import com.android.weatherapp3.logic.model.Weather
 import com.android.weatherapp3.logic.network.SunnyWeatherNetwork
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,16 @@ object Repository {
 
             }
 
+    }
+
+    fun getAiMessage(query: String) = fire(Dispatchers.IO) {
+        val aiResponse = SunnyWeatherNetwork.getAiMessage(query)
+        if (aiResponse.result == 0) {
+            val aiMessage = aiResponse.content
+            Result.success(aiMessage)
+        } else {
+            Result.failure(java.lang.RuntimeException("response status is ${aiResponse.result}"))
+        }
     }
 
     fun refreshWeather(lng: String, lat: String) = fire(Dispatchers.IO) {
