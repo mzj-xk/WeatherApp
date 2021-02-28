@@ -26,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
 
     private val job by lazy { Job() }
 
-    private val splashDuration = 1 * 1000L
+    private val splashDuration = 3 * 1000L
 
     private val scaleAnimation by lazy {
         //  配置缩放动画
