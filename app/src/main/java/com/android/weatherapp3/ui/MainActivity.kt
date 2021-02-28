@@ -13,6 +13,7 @@ import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
 import com.android.weatherapp3.R
+import com.android.weatherapp3.ui.ai.AiFragment
 import com.android.weatherapp3.ui.place.PlaceFragment
 import com.android.weatherapp3.ui.weather.WeatherFragment
 import com.android.weatherapp3.ui.weather.WeatherViewModel
@@ -22,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() , AMapLocationListener{
-    private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
+//    private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
 //    var mlocationClient : AMapLocationClient ?= null
 //    var mlocationOption : AMapLocationClientOption ?= null
 
@@ -48,6 +49,10 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
 
         weatherBtn.setOnClickListener {
             replaceFragment(WeatherFragment())
+        }
+
+        aiBtn.setOnClickListener {
+            replaceFragment(AiFragment())
         }
 
         Log.d("intent", intent.extras.toString())
