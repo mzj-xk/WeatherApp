@@ -48,7 +48,7 @@ class PlaceFragment : Fragment(){
                 adapter.notifyDataSetChanged()
             }
         }
-        viewModel.placeLiveData.observe(this, Observer {
+        viewModel.placeLiveData.observe(this,  {
             val places = it.getOrNull()
             if (places != null){
                 recyclerView.visibility = View.VISIBLE

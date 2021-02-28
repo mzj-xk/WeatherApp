@@ -12,6 +12,7 @@ class PlaceViewModel : ViewModel() {
 
     val placeList = ArrayList<Place>()
 
+    //  使用Transformations的switchMap方法来观察这个对象，否则仓库层返回的LiveData对象将无法进行观察
     val placeLiveData = Transformations.switchMap(searchLiveData){
         Repository.searchPlaces(it)
     }
