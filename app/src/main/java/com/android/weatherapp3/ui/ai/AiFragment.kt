@@ -1,42 +1,76 @@
 package com.android.weatherapp3.ui.ai
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.weatherapp3.R
 import kotlinx.android.synthetic.main.ai.*
-import kotlinx.android.synthetic.main.bottom_bar.*
 
 class AiFragment : Fragment() {
 
     private val viewModel by lazy { ViewModelProviders.of(this).get(AiViewModel::class.java) }
+
+    private val msgList = ArrayList<Msg>()
+
+    private lateinit var adapter: MsgAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.window?.statusBarColor = Color.BLUE
+//        activity?.window?.statusBarColor = Color.BLUE
         return inflater.inflate(R.layout.ai, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sendBtn.setOnClickListener {
+        send.setOnClickListener {
             viewModel.apply {
-                userInput = et.text.toString()
+                userInput = inputText.text.toString()
                 refreshAiMessage(userInput)
             }
         }
         viewModel.getAiMessageLiveData.observe(this, {
             val aiMessage = it.getOrNull()
             if (aiMessage != null) {
-                tv_result.text = aiMessage
+                msgList.add(Msg(aiMessage, Msg.TYPE_RECEIVED))
+                adapter.notifyItemInserted(msgList.size - 1)
+                recyclerView.scrollToPosition(msgList.size - 1)
             }
         })
+
+        initMsg()
+        val layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
+        if (!::adapter.isInitialized) {
+            adapter = MsgAdapter(msgList)
+        }
+        recyclerView.adapter = adapter
+        send.setOnClickListener {
+            val content = inputText.text.toString()
+            if (content.isNotEmpty()) {
+                val msg = Msg(content,Msg.TYPE_SENT)
+                msgList.add(msg)
+                adapter.notifyItemInserted(msgList.size - 1)
+                recyclerView.scrollToPosition(msgList.size - 1)
+                inputText.setText("")
+            }
+        }
     }
+
+    private fun initMsg() {
+        val msg1 = Msg("你好，我是机器人", Msg.TYPE_RECEIVED)
+        msgList.add(msg1)
+//        val msg2 = Msg("Hello. Who is that?", Msg.TYPE_SENT)
+//        msgList.add(msg2)
+//        val msg3 = Msg("This is Tom. Nice talking to you. ", Msg.TYPE_RECEIVED)
+//        msgList.add(msg3)
+    }
+
 }
+
