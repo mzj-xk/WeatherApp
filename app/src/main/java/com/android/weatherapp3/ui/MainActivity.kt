@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
             replaceFragment(AiFragment())
         }
 
-        Log.d("intent", intent.extras.toString())
 
 
         if (intent.extras != null){
