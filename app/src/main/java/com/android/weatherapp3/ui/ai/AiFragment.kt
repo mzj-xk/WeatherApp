@@ -52,20 +52,6 @@ class AiFragment : Fragment(), EventListener{
             adapter = MsgAdapter(msgList)
         }
         recyclerView.adapter = adapter
-        send.setOnClickListener {
-            val content = inputText.text.toString()
-            if (content.isNotEmpty()) {
-                val msg = Msg(content,Msg.TYPE_SENT)
-                msgList.add(msg)
-                viewModel.apply {
-                    userInput = inputText.text.toString()
-                    refreshAiMessage(userInput)
-                }
-                adapter.notifyItemInserted(msgList.size - 1)
-                recyclerView.scrollToPosition(msgList.size - 1)
-                inputText.text = ""
-            }
-        }
         val asr: EventManager = EventManagerFactory.create(context, "asr")
         asr.registerListener(this)
         //  当点击录音按钮时
@@ -93,7 +79,15 @@ class AiFragment : Fragment(), EventListener{
                 if (matcher.find()) {
                     val a = matcher.group(0).indexOf("[")
                     val b = matcher.group(0).indexOf(",")
-                    inputText.text = matcher.group(0).substring(a+2, b-3)
+                    val result = matcher.group(0).substring(a+2, b-3)
+                    msgList.add(Msg(result, Msg.TYPE_SENT))
+                    viewModel.apply {
+                        userInput = result
+                        refreshAiMessage(userInput)
+                    }
+                    adapter.notifyItemInserted(msgList.size - 1)
+                    recyclerView.scrollToPosition(msgList.size - 1)
+
                 }
             }
         }
