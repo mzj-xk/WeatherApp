@@ -29,12 +29,7 @@ class AiFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        send.setOnClickListener {
-            viewModel.apply {
-                userInput = inputText.text.toString()
-                refreshAiMessage(userInput)
-            }
-        }
+        initMsg()
         viewModel.getAiMessageLiveData.observe(this, {
             val aiMessage = it.getOrNull()
             if (aiMessage != null) {
@@ -44,7 +39,7 @@ class AiFragment : Fragment() {
             }
         })
 
-        initMsg()
+
         val layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
         if (!::adapter.isInitialized) {
@@ -56,6 +51,10 @@ class AiFragment : Fragment() {
             if (content.isNotEmpty()) {
                 val msg = Msg(content,Msg.TYPE_SENT)
                 msgList.add(msg)
+                viewModel.apply {
+                    userInput = inputText.text.toString()
+                    refreshAiMessage(userInput)
+                }
                 adapter.notifyItemInserted(msgList.size - 1)
                 recyclerView.scrollToPosition(msgList.size - 1)
                 inputText.setText("")
@@ -66,10 +65,6 @@ class AiFragment : Fragment() {
     private fun initMsg() {
         val msg1 = Msg("你好，我是机器人", Msg.TYPE_RECEIVED)
         msgList.add(msg1)
-//        val msg2 = Msg("Hello. Who is that?", Msg.TYPE_SENT)
-//        msgList.add(msg2)
-//        val msg3 = Msg("This is Tom. Nice talking to you. ", Msg.TYPE_RECEIVED)
-//        msgList.add(msg3)
     }
 
 }
