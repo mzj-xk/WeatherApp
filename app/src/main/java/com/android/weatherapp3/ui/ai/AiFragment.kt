@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.weatherapp3.R
+import com.android.weatherapp3.logic.SystemTTS
 import com.baidu.speech.EventListener
 import com.baidu.speech.EventManager
 import com.baidu.speech.EventManagerFactory
@@ -24,24 +25,35 @@ class AiFragment : Fragment(), EventListener{
 
     private lateinit var adapter: MsgAdapter
 
+    private lateinit var tts: SystemTTS
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tts = SystemTTS.getInstance(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 //        activity?.window?.statusBarColor = Color.BLUE
+        val msg1 = Msg("你好，我是机器人", Msg.TYPE_RECEIVED)
+        tts.playText(msg1.content)
+        msgList.add(msg1)
         return inflater.inflate(R.layout.ai, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initMsg()
         viewModel.getAiMessageLiveData.observe(this, {
             val aiMessage = it.getOrNull()
             if (aiMessage != null) {
                 msgList.add(Msg(aiMessage, Msg.TYPE_RECEIVED))
+                tts.playText(aiMessage)
                 adapter.notifyItemInserted(msgList.size - 1)
                 recyclerView.scrollToPosition(msgList.size - 1)
+
             }
         })
 
@@ -61,10 +73,7 @@ class AiFragment : Fragment(), EventListener{
 
     }
 
-    private fun initMsg() {
-        val msg1 = Msg("你好，我是机器人", Msg.TYPE_RECEIVED)
-        msgList.add(msg1)
-    }
+
 
     override fun onEvent(name: String?, params: String?, data: ByteArray?, offset: Int, length: Int) {
         if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_PARTIAL)) {
