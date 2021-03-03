@@ -16,6 +16,8 @@ object SunnyWeatherNetwork {
 
     private val aiService = AiServiceCreator.create(AiService::class.java)
 
+    private val loginService = LoginServiceCreator.create(LoginService::class.java)
+
     suspend fun getDailyWeather(lng: String, lat: String) =
         weatherService.getDailyWeather(lng, lat).await()
 
@@ -30,6 +32,9 @@ object SunnyWeatherNetwork {
 
     suspend fun getAiMessage(query: String) =
         aiService.getAiMessage(query).await()
+
+    suspend fun loginUser(userName: String, passWord: String) =
+        loginService.loginUser(userName, passWord).await()
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->

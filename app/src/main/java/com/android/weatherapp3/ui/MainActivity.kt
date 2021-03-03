@@ -14,6 +14,7 @@ import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
 import com.android.weatherapp3.R
 import com.android.weatherapp3.ui.ai.AiFragment
+import com.android.weatherapp3.ui.login.LoginFragment
 import com.android.weatherapp3.ui.place.PlaceFragment
 import com.android.weatherapp3.ui.weather.WeatherFragment
 import com.android.weatherapp3.ui.weather.WeatherViewModel
@@ -53,6 +54,10 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
 
         aiBtn.setOnClickListener {
             replaceFragment(AiFragment())
+        }
+
+        loginBtn.setOnClickListener {
+            replaceFragment(LoginFragment())
         }
 
 

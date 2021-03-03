@@ -27,7 +27,7 @@ class PlaceFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.window?.statusBarColor = Color.BLUE
+//        activity?.window?.statusBarColor = Color.BLUE
         return inflater.inflate(R.layout.place, container, false)
     }
 

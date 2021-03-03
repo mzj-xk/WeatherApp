@@ -77,8 +77,17 @@ object Repository {
                     )
                 }
             }
-
         }
+
+    fun loginUser(userName: String, passWord:String) = fire(Dispatchers.IO) {
+        val loginResponse = SunnyWeatherNetwork.loginUser(userName, passWord)
+        if (loginResponse.status == "ok") {
+            val loginPlace = loginResponse.result.place
+            Result.success(loginPlace)
+        } else {
+            Result.failure(java.lang.RuntimeException("response status is ${loginResponse.status}"))
+        }
+    }
 
     private fun <T> fire(context: CoroutineContext, block: suspend () -> Result<T>) =
         liveData<Result<T>>(context){
