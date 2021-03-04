@@ -17,6 +17,10 @@ class LoginViewModel : ViewModel() {
 
     val placeList = ArrayList<Place>()
 
+    var userName = ""
+
+    var passWord = ""
+
     val user = Transformations.switchMap(loginLiveData) {
         Repository.loginUser(it.userName, it.passWord)
     }

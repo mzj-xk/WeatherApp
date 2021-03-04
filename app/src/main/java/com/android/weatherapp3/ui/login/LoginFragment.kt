@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,8 +39,12 @@ class LoginFragment : Fragment() {
             val userName = it.getString("userName", null)
             val passWord = it.getString("passWord", null)
             if (userName != null && passWord != null) {
-                viewModel.loginAccount(userName, passWord)
-                viewModel.changeIsLogin(true)
+                viewModel.apply {
+                    this.userName = userName
+                    this.passWord = passWord
+                    loginAccount(this.userName, this.passWord)
+                    changeIsLogin(true)
+                }
             } else {
                 viewModel.changeIsLogin(false)
             }
@@ -55,7 +60,11 @@ class LoginFragment : Fragment() {
 
         // 点击登录
         login.setOnClickListener {
-            viewModel.loginAccount(userNameEt.text.toString(), passWordEt.text.toString())
+            viewModel.apply {
+                userName = userNameEt.text.toString()
+                passWord = passWordEt.text.toString()
+                loginAccount(userName, passWord)
+            }
         }
 
         //  如果未登录就显示登录框
@@ -79,15 +88,18 @@ class LoginFragment : Fragment() {
                 val account =
                     activity?.getSharedPreferences("account", Context.MODE_PRIVATE)?.edit()
                 account?.apply {
-                    putString("userName", "0001")
-                    putString("passWord", "123456")
+                    putString("userName", viewModel.userName)
+                    putString("passWord", viewModel.passWord)
                     apply()
                 }
                 viewModel.changeIsLogin(true)
                 viewModel.placeList.clear()
                 viewModel.placeList.addAll(places)
-                Log.d("GET",places.toString())
+                Log.d("GET places",places.toString())
                 adapter.notifyDataSetChanged()
+            } else {
+                Toast.makeText(context, "账号或密码错误", Toast.LENGTH_SHORT).show()
+                Log.d("GET places",places.toString())
             }
         })
     }
