@@ -1,5 +1,6 @@
 package com.android.weatherapp3.ui.login
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +27,7 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.login, container, false)
     }
 
+    @SuppressLint("CommitPrefEdits")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val layoutManager = LinearLayoutManager(activity)
@@ -51,9 +53,9 @@ class LoginFragment : Fragment() {
             viewModel.changeIsLogin(false)
         }
 
-
+        // 点击登录
         login.setOnClickListener {
-            viewModel.loginAccount("0001","123456")
+            viewModel.loginAccount(userNameEt.text.toString(), passWordEt.text.toString())
         }
 
         //  如果未登录就显示登录框
