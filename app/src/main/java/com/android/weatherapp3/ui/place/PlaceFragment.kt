@@ -3,6 +3,7 @@ package com.android.weatherapp3.ui.place
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,7 @@ class PlaceFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.window?.statusBarColor = Color.BLUE
+//        activity?.window?.statusBarColor = Color.BLUE
         return inflater.inflate(R.layout.place, container, false)
     }
 
@@ -48,13 +49,14 @@ class PlaceFragment : Fragment(){
                 adapter.notifyDataSetChanged()
             }
         }
-        viewModel.placeLiveData.observe(this, Observer {
+        viewModel.placeLiveData.observe(this,  {
             val places = it.getOrNull()
             if (places != null){
                 recyclerView.visibility = View.VISIBLE
 //                bgImageView.visibility = View.GONE
                 viewModel.placeList.clear()
                 viewModel.placeList.addAll(places)
+                Log.d("GET",places.toString())
                 adapter.notifyDataSetChanged()
             } else {
                Toast.makeText(activity, "未能查询到任何地点", Toast.LENGTH_SHORT).show()

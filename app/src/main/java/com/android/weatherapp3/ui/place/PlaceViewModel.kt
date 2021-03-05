@@ -12,17 +12,13 @@ class PlaceViewModel : ViewModel() {
 
     val placeList = ArrayList<Place>()
 
-    val placeLiveData = Transformations.switchMap(searchLiveData){ query ->
-        Repository.searchPlaces(query)
+    //  使用Transformations的switchMap方法来观察这个对象，否则仓库层返回的LiveData对象将无法进行观察
+    val placeLiveData = Transformations.switchMap(searchLiveData){
+        Repository.searchPlaces(it)
     }
 
     fun searchPlaces(query: String) {
         searchLiveData.value = query
     }
 
-//    fun savePlace(place: Place) = Repository.savePlace(place)
-//
-//    fun getSavedPlace() = Repository.getPlace()
-//
-//    fun isPlaceSaved() = Repository.isPlaceSaved()
 }

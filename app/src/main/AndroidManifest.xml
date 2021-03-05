@@ -24,6 +24,11 @@
             android:theme="@style/AppTheme">
 
         </activity>
+
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="fc770011e1d219eb67976aa0b2bdf6e3"/>
+<!--        <service-->
+<!--            android:name="com.amap.api.location.APSService"-->
+<!--            android:foregroundServiceType="location" />-->
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -54,5 +59,12 @@
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--用于读取手机当前的状态-->
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<!--    持续定位-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

@@ -1,27 +1,19 @@
 package com.android.weatherapp3.ui.weather
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.weatherapp3.R
 import com.android.weatherapp3.logic.model.Weather
 import com.android.weatherapp3.logic.model.getSky
-import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.forecast.*
 import kotlinx.android.synthetic.main.life_index.*
 import kotlinx.android.synthetic.main.now.*
@@ -34,17 +26,13 @@ class WeatherFragment : Fragment(){
 
     private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
 
+//    private val viewModel by lazy { ViewModelProviders.of(requireActivity()).get(WeatherViewModel::class.java) }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("city name in fragment",viewModel.placeName)
-        val bundle = this.arguments
-        if (bundle?.getString("place_name") != ""){
-            viewModel.placeName = bundle?.getString("place_name").toString()
-            viewModel.locationLat = bundle?.getString("location_lat").toString()
-            viewModel.locationLng = bundle?.getString("location_lng").toString()
-        }
+        Log.d("viewmodel in fragment",viewModel.placeName)
         activity?.window?.statusBarColor = Color.TRANSPARENT
 
 
@@ -56,6 +44,17 @@ class WeatherFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("bundle is null?",arguments.toString())
+        Log.d("bundle place name",arguments?.getString("placeName").toString())
+
+        if (arguments != null){
+            viewModel.placeName = arguments!!.getString("placeName").toString()
+            viewModel.locationLat = arguments!!.getString("lat").toString()
+            viewModel.locationLng = arguments!!.getString("lng").toString()
+        }
+
+        refreshWeather()
+
         viewModel.weatherLiveData.observe(this, {
             val weather = it.getOrNull()
             if (weather != null) {
@@ -65,9 +64,9 @@ class WeatherFragment : Fragment(){
                 Toast.makeText(context, "无法成功获取天气信息", Toast.LENGTH_SHORT).show()
                 it.exceptionOrNull()?.printStackTrace()
             }
-            swipeRefresh?.isRefreshing = false
+//            swipeRefresh?.isRefreshing = false
         })
-        refreshWeather()
+
 
         return inflater.inflate(R.layout.weather, container, false)
     }
@@ -77,7 +76,7 @@ class WeatherFragment : Fragment(){
         placeName.text = viewModel.placeName
         val realtime = weather.realtime
         val daily = weather.daily
-
+        line.visibility = View.VISIBLE
         val currentTempText = "${realtime.temperature.toInt()} ℃"
         currentTemp.text = currentTempText
         currentSky.text = getSky(realtime.skycon).info
