@@ -1,14 +1,13 @@
 package com.android.weatherapp3
 
 import android.app.*
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.graphics.BitmapFactory
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
@@ -20,10 +19,11 @@ import com.android.weatherapp3.logic.model.getSky
 import com.android.weatherapp3.ui.MainActivity
 import com.android.weatherapp3.ui.weather.WeatherFragment
 import com.android.weatherapp3.ui.weather.WeatherViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MyService : Service() {
 
-    private lateinit var message: String
 
     private val mBinder = DownloadBinder("null")
 
@@ -39,16 +39,55 @@ class MyService : Service() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBind(intent: Intent): IBinder {
         val pi = PendingIntent.getActivity(this, 0, intent, 0)
-        val notification = NotificationCompat.Builder(this, "my_service")
+        val notification1 = NotificationCompat.Builder(this, "my_service")
             .setContentTitle(intent.getStringExtra("placeName"))
             .setContentText(intent.getStringExtra("weather"))
             .setSmallIcon(R.drawable.ic_light_rain)
             .setLargeIcon(BitmapFactory.decodeResource(resources, getSky(intent.getStringExtra("icon")).icon))
             .setContentIntent(pi)
             .build()
-        startForeground(1, notification)
+        startForeground(1, notification1)
+
+        val viewModel = WeatherViewModel()
+
+//            viewModel.apply {
+//                refreshWeather(locationLng, locationLat)
+//                weatherLiveData.observeForever {
+//                    val weather = it.getOrNull()
+//                    Log.d("MyService net", weather?.rainInfo?.description)
+//                }
+//            }
+            // 定时发起弹窗 test
+        val manager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channel = NotificationChannel("normal","Normal",NotificationManager.IMPORTANCE_DEFAULT)
+        manager.createNotificationChannel(channel)
+        Thread {
+            while (true) {
+                val df = SimpleDateFormat("hh:mm:ss")
+                val time = df.format(Date())
+                val hour = SimpleDateFormat("ss")
+                val active = hour.format(Date())
+                Thread.sleep(1000)
+                if (active == "00") {
+                    Log.d("Service", "$time  yes")
+                    val notification = NotificationCompat.Builder(this, "normal")
+                        .setSmallIcon(R.drawable.ic_clear_day)
+                        .setContentTitle(intent.getStringExtra("placeName"))
+                        .setContentText(time)
+                        .setAutoCancel(true)
+                        .setWhen(System.currentTimeMillis())
+                        .setOngoing(false)
+                        .build()
+                    manager.notify(2, notification)
+                } else {
+                    Log.d("Service", "$time  no")
+                }
+            }
+        }.start()
         return mBinder
     }
 
@@ -70,6 +109,7 @@ class MyService : Service() {
 
 
 
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -79,6 +119,7 @@ class MyService : Service() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
 
 }
 
