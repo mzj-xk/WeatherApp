@@ -46,19 +46,29 @@ class MyService : LifecycleService() {
             .setContentIntent(pi)
             .build()
         startForeground(1, notification1)
+        return mBinder
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onCreate() {
+        super.onCreate()
+        Log.d("MyService", "onCreate executed")
+        val manager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "my_service",
+                "前台Service通知",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            manager.createNotificationChannel(channel)
+        }
 
         val viewModel = ServiceViewModel()
 
-//            viewModel.apply {
-//                refreshWeather(locationLng, locationLat)
-//                weatherLiveData.observeForever {
-//                    val weather = it.getOrNull()
-//                    Log.d("MyService net", weather?.rainInfo?.description)
-//                }
-//            }
-            // 定时发起弹窗 test
-        val manager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // 定时发起弹窗 test
         val channel = NotificationChannel("normal","Normal",NotificationManager.IMPORTANCE_DEFAULT)
         manager.createNotificationChannel(channel)
         Thread {
@@ -69,12 +79,14 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
                 Log.d("Service", "$time $active")
-                if (active == "00" || active == "30") {
+                if (active == "00" || active == "30" || active == "10" || active == "20" || active == "40"||  active == "50") {
                     Log.d("Service", "$time yes")
                     viewModel.apply {
-                        placeName = intent.getStringExtra("placeName")
-                        lat = intent.getStringExtra("lat")
-                        lng = intent.getStringExtra("lng")
+                        getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
+                            placeName = it.getString("placeName", "广州")
+                            lat = it.getString("lat", "23.452082")
+                            lng = it.getString("lng", "113.491949")
+                        }
                         refreshWeather()
                         Handler(Looper.getMainLooper()).post {
                             weatherLiveData.observe(this@MyService, {
@@ -93,22 +105,6 @@ class MyService : LifecycleService() {
                                 manager.notify(2, notification)
                             })
                         }
-//                        weatherLiveData.observe(this@MyService, {
-//                            val weather = it.getOrNull()
-//                            val notification = NotificationCompat.Builder(
-//                                this@MyService,
-//                                "normal"
-//                            )
-//                                .setSmallIcon(R.drawable.ic_clear_day)
-//                                .setContentTitle(placeName)
-//                                .setContentText("$time ${weather?.rainInfo?.description}")
-//                                .setAutoCancel(true)
-//                                .setWhen(System.currentTimeMillis())
-//                                .setOngoing(false)
-//                                .build()
-//                            manager.notify(2, notification)
-
-//                        })
                     }
 
 
@@ -117,30 +113,13 @@ class MyService : LifecycleService() {
                 }
             }
         }.start()
-        return mBinder
-    }
-
-
-    override fun onCreate() {
-        super.onCreate()
-        Log.d("MyService", "onCreate executed")
-        val manager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "my_service",
-                "前台Service通知",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            manager.createNotificationChannel(channel)
-        }
 
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        return START_REDELIVER_INTENT
+        //  解锁后会发送最新的通知
+        return START_STICKY
     }
 
 

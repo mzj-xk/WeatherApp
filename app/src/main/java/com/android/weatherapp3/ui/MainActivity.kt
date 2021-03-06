@@ -154,6 +154,16 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                 val date = Date(amapLocation.time)
                 Log.i("获取定位时间", df.format(date))
 
+                //  保存定位信息
+                amapLocation.apply {
+                    getSharedPreferences("phoneLocation", Context.MODE_PRIVATE).edit().apply {
+                        putString("placeName", city)
+                        putString("lat", latitude.toString())
+                        putString("lng", longitude.toString())
+                        apply()
+                    }
+                }
+
                 bundle = Bundle().apply {
                     putString("placeName",amapLocation.city)
                     putString("lat", amapLocation.latitude.toString())
@@ -172,7 +182,12 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                         + amapLocation?.errorCode + ", errInfo:"
                         + amapLocation?.errorInfo)
 
-                Toast.makeText(this, "未开启定位功能，无法查看定位地点的天气信息", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "未开启定位功能，显示已保存定位的天气信息", Toast.LENGTH_SHORT).show()
+                getSharedPreferences("phoneLocation", Context.MODE_PRIVATE).apply {
+                    getString("placeName", "广州")
+                    getString("lat", "23.452082")
+                    getString("lng", "113.491949")
+                }
             }
         } catch (e: Exception) {
         }

@@ -10,11 +10,11 @@ class WeatherViewModel : ViewModel(){
 
     private val locationLiveData = MutableLiveData<Location>()
 
-    var locationLng = "116.397128"
+    var locationLng = "113.491949"  // 经度
 
-    var locationLat = "39.916527"
+    var locationLat = "23.452082"   // 纬度
 
-    var placeName = "北京"
+    var placeName = "广州"
 
     val weatherLiveData = Transformations.switchMap(locationLiveData){
         Repository.refreshWeather(it.lng, it.lat)
