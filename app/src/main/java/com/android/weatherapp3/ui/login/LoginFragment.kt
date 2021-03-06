@@ -79,7 +79,6 @@ class LoginFragment : Fragment() {
 
         })
 
-        activity?.getSharedPreferences("account", Context.MODE_PRIVATE)
         viewModel.user.observe(this, {
             val places = it.getOrNull()
             if (places != null) {

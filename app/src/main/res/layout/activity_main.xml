@@ -16,9 +16,13 @@
             android:id="@+id/showFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:visibility="visible"/>
 
-        <include layout="@layout/bottom_bar"/>
+        <include
+            android:id="@+id/bar"
+            layout="@layout/bottom_bar"
+            android:visibility="invisible"/>
 
 <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 

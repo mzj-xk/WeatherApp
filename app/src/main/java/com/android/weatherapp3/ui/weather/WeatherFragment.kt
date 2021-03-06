@@ -22,6 +22,7 @@ import com.android.weatherapp3.MyService
 import com.android.weatherapp3.R
 import com.android.weatherapp3.logic.model.Weather
 import com.android.weatherapp3.logic.model.getSky
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.forecast.*
 import kotlinx.android.synthetic.main.life_index.*
 import kotlinx.android.synthetic.main.now.*
@@ -141,10 +142,13 @@ class WeatherFragment : Fragment() {
         }
 
 
-        val serviceIntent = Intent(activity, MyService::class.java)
-        serviceIntent.putExtra("placeName", viewModel.placeName)
-        serviceIntent.putExtra("weather", weather.rainInfo.description)
-        serviceIntent.putExtra("icon", realtime.skycon)
+        val serviceIntent = Intent(activity, MyService::class.java).apply {
+            putExtra("placeName", viewModel.placeName)
+            putExtra("lat", viewModel.locationLat)
+            putExtra("lng", viewModel.locationLng)
+            putExtra("weather", weather.rainInfo.description)
+            putExtra("icon", realtime.skycon)
+        }
         activity?.bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
 
 

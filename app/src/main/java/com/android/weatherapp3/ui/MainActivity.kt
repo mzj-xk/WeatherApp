@@ -5,11 +5,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.amap.api.location.AMapLocation
@@ -23,6 +27,7 @@ import com.android.weatherapp3.ui.login.LoginFragment
 import com.android.weatherapp3.ui.place.PlaceFragment
 import com.android.weatherapp3.ui.weather.WeatherFragment
 import com.android.weatherapp3.ui.weather.WeatherViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_bar.*
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -41,11 +46,13 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
 
 
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window?.statusBarColor = Color.TRANSPARENT
 
 
         Log.d("MainActivity","MainActivity onCreate")
@@ -79,7 +86,9 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                putString("lat", intent.getStringExtra("lat"))
                putString("lng", intent.getStringExtra("lng"))
            }
-           replaceFragment(WeatherFragment(), bundle)
+            replaceFragment(WeatherFragment(), bundle)
+            bar.visibility = View.VISIBLE
+            showFragment.visibility = View.VISIBLE
        }else{
             showLocation()
         }
@@ -151,6 +160,8 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                     putString("lng", amapLocation.longitude.toString())
                 }
                 replaceFragment(WeatherFragment(), bundle)
+                bar.visibility = View.VISIBLE
+                showFragment.visibility = View.VISIBLE
 
 
                 // 停止定位
@@ -160,6 +171,8 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                 Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation?.errorCode + ", errInfo:"
                         + amapLocation?.errorInfo)
+
+                Toast.makeText(this, "未开启定位功能，无法查看定位地点的天气信息", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
         }

@@ -6,5 +6,6 @@ data class RainResponse(val status: String, val result: Result){
 
     data class Minutely(val description: String)
 
+    data class Probability(val probability: List<Float>)
 
 }
