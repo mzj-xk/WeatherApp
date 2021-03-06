@@ -1,9 +1,13 @@
 package com.android.weatherapp3.ui
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -12,6 +16,7 @@ import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
+import com.android.weatherapp3.MyService
 import com.android.weatherapp3.R
 import com.android.weatherapp3.ui.ai.AiFragment
 import com.android.weatherapp3.ui.login.LoginFragment
@@ -33,6 +38,9 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
     private lateinit var bundle: Bundle
 
 
+
+
+
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +50,9 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
 
         Log.d("MainActivity","MainActivity onCreate")
         setContentView(R.layout.activity_main)
+
+//        val serviceIntent = Intent(this, MyService::class.java)
+//        bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
 
 
         searchBtn.setOnClickListener {

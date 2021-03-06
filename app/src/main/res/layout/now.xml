@@ -73,14 +73,16 @@
                 android:textColor="#fff"
                 android:textSize="18sp"
                 android:text="|"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:layout_marginLeft="13sp" />
             <TextView
                 android:id="@+id/currentAQI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13sp"
                 android:textColor="#fff"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_marginLeft="13sp" />
 
         </LinearLayout>
 
