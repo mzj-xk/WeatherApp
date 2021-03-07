@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.android.weatherapp3.MyService
 import com.android.weatherapp3.R
+import com.android.weatherapp3.logic.SystemTTS
 import com.android.weatherapp3.logic.model.Weather
 import com.android.weatherapp3.logic.model.getSky
 import kotlinx.android.synthetic.main.activity_main.*
@@ -76,6 +77,9 @@ class WeatherFragment : Fragment() {
             }
 //            swipeRefresh?.isRefreshing = false
         })
+
+
+
 
 
         return inflater.inflate(R.layout.weather, container, false)
@@ -159,6 +163,21 @@ class WeatherFragment : Fragment() {
         viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
 //        line.visibility = View.VISIBLE
 //        swipeRefresh.isRefreshing = true
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        //  添加点击事件，点击可以语音播报页面的天气信息
+        nowLayout.setOnClickListener {
+            SystemTTS.getInstance(context).playText(
+                "${placeName.text}," +
+                        "${currentTemp.text}," +
+                        "${currentSky.text}," +
+                        "${currentAQI.text}," +
+                        "${rainInfoText.text}"
+            )
+        }
     }
 
 

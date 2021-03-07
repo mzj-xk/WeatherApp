@@ -82,7 +82,7 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
 //                if (active == "00" || active == "30" || active == "10" || active == "20" || active == "40"||  active == "50") {
-                if (active == "20" ||  active == "50") {   // 测试时为每分钟的第30秒发起一次网络请求
+                if (active == "30") {   // 测试时为每分钟的第30秒发起一次网络请求
                     Log.d("Service_sky", "$time yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
@@ -133,7 +133,7 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
                 //  判断是否为整点 测试时为每分钟的第15 50秒发起一次网络请求
-                if (active == "00" || active == "40") {
+                if (active == "00") {
                     Log.d("Service_rain", "$time $active yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
