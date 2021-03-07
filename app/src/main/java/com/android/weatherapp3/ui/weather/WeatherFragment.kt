@@ -66,6 +66,7 @@ class WeatherFragment : Fragment() {
 
         viewModel.weatherLiveData.observe(this, {
             val weather = it.getOrNull()
+            Log.d("Weather Fragment", weather.toString())
             if (weather != null) {
                 showWeatherInfo(weather)
                 Log.d("weather data",weather.toString())
