@@ -70,9 +70,10 @@ class MyService : LifecycleService() {
         val viewModel = ServiceViewModel()
 
         // 定时发起弹窗 test
-        val channel = NotificationChannel("normal","Normal",NotificationManager.IMPORTANCE_DEFAULT)
-        manager.createNotificationChannel(channel)
+
         Thread {
+            val channelTime = NotificationChannel("time","Time",NotificationManager.IMPORTANCE_DEFAULT)
+            manager.createNotificationChannel(channelTime)
             while (true) {
                 val df = SimpleDateFormat("hh:mm:ss")
                 val time = df.format(System.currentTimeMillis())
@@ -80,7 +81,7 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
 //                if (active == "00" || active == "30" || active == "10" || active == "20" || active == "40"||  active == "50") {
-                if (active == "30") {   // 测试时为每分钟的第30秒发起一次网络请求
+                if (active == "20" ||  active == "50") {   // 测试时为每分钟的第30秒发起一次网络请求
                     Log.d("Service sky", "$time yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
@@ -95,7 +96,7 @@ class MyService : LifecycleService() {
                                 if (weather != null){
                                     val notification = NotificationCompat.Builder(
                                         this@MyService,
-                                        "normal"
+                                        "time"
                                     )
                                         .setSmallIcon(getSky(weather.realtime.skycon).icon)
                                         .setContentTitle(placeName)
@@ -120,8 +121,9 @@ class MyService : LifecycleService() {
         }.start()
 
 //          降雨前提醒
-
         Thread {
+            val channelRain = NotificationChannel("rain","Rain",NotificationManager.IMPORTANCE_DEFAULT)
+            manager.createNotificationChannel(channelRain)
             while (true) {
                 val df = SimpleDateFormat("hh:mm:ss")
                 val time = df.format(System.currentTimeMillis())
@@ -130,7 +132,7 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
                 //  判断是否为整点 测试时为每分钟的第15 50秒发起一次网络请求
-                if (active == "15" || active == "50") {
+                if (active == "00" || active == "40") {
                     Log.d("Service_rain", "$time $active yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
@@ -154,7 +156,7 @@ class MyService : LifecycleService() {
                                     ) {
                                         val notification = NotificationCompat.Builder(
                                         this@MyService,
-                                        "normal"
+                                        "rain"
                                     )
                                         .setSmallIcon(getSky(weather.realtime.skycon).icon)
                                         .setContentTitle("$placeName 降雨提醒")
