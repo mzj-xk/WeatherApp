@@ -1,5 +1,6 @@
 package com.android.weatherapp3
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.*
 import android.graphics.BitmapFactory
@@ -41,6 +42,7 @@ class MyService : LifecycleService() {
     }
 
 
+    @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
@@ -72,7 +74,7 @@ class MyService : LifecycleService() {
         // 定时发起弹窗 test
 
         Thread {
-            val channelTime = NotificationChannel("time","Time",NotificationManager.IMPORTANCE_DEFAULT)
+            val channelTime = NotificationChannel("time","Time",NotificationManager.IMPORTANCE_MAX)
             manager.createNotificationChannel(channelTime)
             while (true) {
                 val df = SimpleDateFormat("hh:mm:ss")
@@ -122,7 +124,7 @@ class MyService : LifecycleService() {
 
 //          降雨前提醒
         Thread {
-            val channelRain = NotificationChannel("rain","Rain",NotificationManager.IMPORTANCE_DEFAULT)
+            val channelRain = NotificationChannel("rain","Rain",NotificationManager.IMPORTANCE_MAX)
             manager.createNotificationChannel(channelRain)
             while (true) {
                 val df = SimpleDateFormat("hh:mm:ss")
