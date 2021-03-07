@@ -42,7 +42,6 @@ class MyService : LifecycleService() {
     }
 
 
-    @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
@@ -74,7 +73,7 @@ class MyService : LifecycleService() {
         // 定时发起弹窗 test
 
         Thread {
-            val channelTime = NotificationChannel("time","Time",NotificationManager.IMPORTANCE_MAX)
+            val channelTime = NotificationChannel("time","Time",NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channelTime)
             while (true) {
                 val df = SimpleDateFormat("hh:mm:ss")
@@ -84,7 +83,7 @@ class MyService : LifecycleService() {
                 Thread.sleep(1000)
 //                if (active == "00" || active == "30" || active == "10" || active == "20" || active == "40"||  active == "50") {
                 if (active == "20" ||  active == "50") {   // 测试时为每分钟的第30秒发起一次网络请求
-                    Log.d("Service sky", "$time yes")
+                    Log.d("Service_sky", "$time yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
                             placeName = it.getString("placeName", "广州")
@@ -117,14 +116,14 @@ class MyService : LifecycleService() {
                         }
                     }
                 } else {
-                    Log.d("Service sky", "$time  no")
+                    Log.d("Service_sky", "$time  no")
                 }
             }
         }.start()
 
 //          降雨前提醒
         Thread {
-            val channelRain = NotificationChannel("rain","Rain",NotificationManager.IMPORTANCE_MAX)
+            val channelRain = NotificationChannel("rain","Rain",NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channelRain)
             while (true) {
                 val df = SimpleDateFormat("hh:mm:ss")
