@@ -183,10 +183,16 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                         + amapLocation?.errorInfo)
 
                 Toast.makeText(this, "未开启定位功能，显示已保存定位的天气信息", Toast.LENGTH_SHORT).show()
-                getSharedPreferences("phoneLocation", Context.MODE_PRIVATE).apply {
-                    getString("placeName", "广州")
-                    getString("lat", "23.452082")
-                    getString("lng", "113.491949")
+                getSharedPreferences("phoneLocation", Context.MODE_PRIVATE).also {
+
+                    bundle = Bundle().apply {
+                        this.putString("placeName", it.getString("placeName", "广州"))
+                        this.putString("lat", it.getString("lat", "23.452082"))
+                        this.putString("lng", it.getString("lng", "113.491949"))
+                    }
+                    replaceFragment(WeatherFragment(), bundle)
+                    bar.visibility = View.VISIBLE
+                    showFragment.visibility = View.VISIBLE
                 }
             }
         } catch (e: Exception) {
