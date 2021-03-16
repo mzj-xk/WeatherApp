@@ -102,8 +102,9 @@ class MyService : LifecycleService() {
                                         .setSmallIcon(getSky(weather.realtime.skycon).icon)
                                         .setContentTitle(placeName)
                                         .setContentText(
+                                            "你好，当前天气为 "+
                                             "${getSky(weather.realtime.skycon).info} " +
-                                                    "当前温度 ${weather.realtime.temperature} " +
+                                                    "温度 ${weather.realtime.temperature} " +
                                                     "空气指数 ${weather.realtime.airQuality.aqi.chn.toInt()}")
                                         .setAutoCancel(true)
                                         .setWhen(System.currentTimeMillis())
