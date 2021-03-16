@@ -1,7 +1,13 @@
 package com.android.weatherapp3.ui.weather
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +15,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.android.weatherapp3.MyService
 import com.android.weatherapp3.R
+import com.android.weatherapp3.logic.SystemTTS
 import com.android.weatherapp3.logic.model.Weather
 import com.android.weatherapp3.logic.model.getSky
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.forecast.*
 import kotlinx.android.synthetic.main.life_index.*
 import kotlinx.android.synthetic.main.now.*
@@ -22,7 +32,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class WeatherFragment : Fragment(){
+class WeatherFragment : Fragment() {
+
+    private lateinit var downloadBinder: MyService.DownloadBinder
 
     private val viewModel by lazy { ViewModelProviders.of(this).get(WeatherViewModel::class.java) }
 
@@ -30,13 +42,11 @@ class WeatherFragment : Fragment(){
 
 
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("viewmodel in fragment",viewModel.placeName)
         activity?.window?.statusBarColor = Color.TRANSPARENT
-
-
-
     }
 
     override fun onCreateView(
@@ -57,6 +67,7 @@ class WeatherFragment : Fragment(){
 
         viewModel.weatherLiveData.observe(this, {
             val weather = it.getOrNull()
+            Log.d("Weather Fragment", weather.toString())
             if (weather != null) {
                 showWeatherInfo(weather)
                 Log.d("weather data",weather.toString())
@@ -66,6 +77,9 @@ class WeatherFragment : Fragment(){
             }
 //            swipeRefresh?.isRefreshing = false
         })
+
+
+
 
 
         return inflater.inflate(R.layout.weather, container, false)
@@ -116,6 +130,32 @@ class WeatherFragment : Fragment(){
         carWashingText.text = lifeIndex.carWashing[0].desc
         weatherLayout.visibility = View.VISIBLE
 
+        val connection = object : ServiceConnection {
+
+
+
+            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                downloadBinder = service as MyService.DownloadBinder
+                downloadBinder.startDownload()
+                downloadBinder.getProgress()
+                downloadBinder.text = "aa"
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+
+            }
+        }
+
+
+        val serviceIntent = Intent(activity, MyService::class.java).apply {
+            putExtra("placeName", viewModel.placeName)
+            putExtra("lat", viewModel.locationLat)
+            putExtra("lng", viewModel.locationLng)
+            putExtra("weather", weather.rainInfo.description)
+            putExtra("icon", realtime.skycon)
+        }
+        activity?.bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
+
 
     }
 
@@ -123,6 +163,21 @@ class WeatherFragment : Fragment(){
         viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
 //        line.visibility = View.VISIBLE
 //        swipeRefresh.isRefreshing = true
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        //  添加点击事件，点击可以语音播报页面的天气信息
+        nowLayout.setOnClickListener {
+            SystemTTS.getInstance(context).playText(
+                "${placeName.text}," +
+                        "${currentTemp.text}," +
+                        "${currentSky.text}," +
+                        "${currentAQI.text}," +
+                        "${rainInfoText.text}"
+            )
+        }
     }
 
 

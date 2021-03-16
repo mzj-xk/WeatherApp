@@ -1,23 +1,33 @@
 package com.android.weatherapp3.ui
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
+import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
+import com.android.weatherapp3.MyService
 import com.android.weatherapp3.R
 import com.android.weatherapp3.ui.ai.AiFragment
 import com.android.weatherapp3.ui.login.LoginFragment
 import com.android.weatherapp3.ui.place.PlaceFragment
 import com.android.weatherapp3.ui.weather.WeatherFragment
 import com.android.weatherapp3.ui.weather.WeatherViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_bar.*
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -33,15 +43,23 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
     private lateinit var bundle: Bundle
 
 
+
+
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window?.statusBarColor = Color.TRANSPARENT
 
 
         Log.d("MainActivity","MainActivity onCreate")
         setContentView(R.layout.activity_main)
+
+//        val serviceIntent = Intent(this, MyService::class.java)
+//        bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
 
 
         searchBtn.setOnClickListener {
@@ -68,7 +86,9 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                putString("lat", intent.getStringExtra("lat"))
                putString("lng", intent.getStringExtra("lng"))
            }
-           replaceFragment(WeatherFragment(), bundle)
+            replaceFragment(WeatherFragment(), bundle)
+            bar.visibility = View.VISIBLE
+            showFragment.visibility = View.VISIBLE
        }else{
             showLocation()
         }
@@ -134,12 +154,24 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                 val date = Date(amapLocation.time)
                 Log.i("获取定位时间", df.format(date))
 
+                //  保存定位信息
+                amapLocation.apply {
+                    getSharedPreferences("phoneLocation", Context.MODE_PRIVATE).edit().apply {
+                        putString("placeName", city)
+                        putString("lat", latitude.toString())
+                        putString("lng", longitude.toString())
+                        apply()
+                    }
+                }
+
                 bundle = Bundle().apply {
                     putString("placeName",amapLocation.city)
                     putString("lat", amapLocation.latitude.toString())
                     putString("lng", amapLocation.longitude.toString())
                 }
                 replaceFragment(WeatherFragment(), bundle)
+                bar.visibility = View.VISIBLE
+                showFragment.visibility = View.VISIBLE
 
 
                 // 停止定位
@@ -149,6 +181,19 @@ class MainActivity : AppCompatActivity() , AMapLocationListener{
                 Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation?.errorCode + ", errInfo:"
                         + amapLocation?.errorInfo)
+
+                Toast.makeText(this, "未开启定位功能，显示已保存定位的天气信息", Toast.LENGTH_SHORT).show()
+                getSharedPreferences("phoneLocation", Context.MODE_PRIVATE).also {
+
+                    bundle = Bundle().apply {
+                        this.putString("placeName", it.getString("placeName", "广州"))
+                        this.putString("lat", it.getString("lat", "23.452082"))
+                        this.putString("lng", it.getString("lng", "113.491949"))
+                    }
+                    replaceFragment(WeatherFragment(), bundle)
+                    bar.visibility = View.VISIBLE
+                    showFragment.visibility = View.VISIBLE
+                }
             }
         } catch (e: Exception) {
         }

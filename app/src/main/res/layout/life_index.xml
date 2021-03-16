@@ -11,7 +11,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusable="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,7 +21,8 @@
             android:layout_marginTop="20dp"
             android:text="生活指数"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:focusable="true"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +54,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="感冒" />
+                        android:text="感冒"
+                        android:contentDescription="感冒指数"
+                        android:focusable="false"/>
 
                     <TextView
                         android:id="@+id/coldRiskText"
@@ -60,7 +64,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textSize="16sp"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:focusable="false"/>
 
                 </LinearLayout>
             </RelativeLayout>
@@ -90,7 +95,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="穿衣" />
+                        android:text="穿衣"
+                        android:contentDescription="穿衣指数"
+                        android:focusable="false"/>
 
                     <TextView
                         android:id="@+id/dressingText"
@@ -98,7 +105,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textSize="16sp"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:focusable="false"/>
 
                 </LinearLayout>
             </RelativeLayout>
@@ -136,7 +144,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="实时紫外线" />
+                        android:text="实时紫外线"
+                        android:contentDescription="实时紫外线指数"
+                        android:focusable="false"/>
 
                     <TextView
                         android:id="@+id/ultravioletText"
@@ -144,7 +154,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textSize="16sp"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:focusable="false"/>
 
                 </LinearLayout>
             </RelativeLayout>
@@ -174,7 +185,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="穿衣" />
+                        android:text="穿衣"
+                        android:contentDescription="穿衣指数"
+                        android:focusable="false"/>
 
                     <TextView
                         android:id="@+id/carWashingText"
@@ -182,6 +195,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textSize="16sp"
+                        android:focusable="false"
                         android:textColor="?android:attr/textColorPrimary" />
 
                 </LinearLayout>
