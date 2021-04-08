@@ -82,7 +82,7 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
 //                if (active == "00" || active == "30" || active == "10" || active == "20" || active == "40"||  active == "50") {
-                if (active == "30") {   // 测试时为每分钟的第30秒发起一次网络请求
+                if (active == "00" || active == "20" || active == "40") {   // 测试时为每分钟的第30秒发起一次网络请求
                     Log.d("Service_sky", "$time yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
@@ -103,7 +103,7 @@ class MyService : LifecycleService() {
                                         .setContentTitle(placeName)
                                         .setContentText(
                                             "你好，当前天气为 "+
-                                            "${getSky(weather.realtime.skycon).info} " +
+                                                    "${getSky(weather.realtime.skycon).info} " +
                                                     "温度 ${weather.realtime.temperature} " +
                                                     "空气指数 ${weather.realtime.airQuality.aqi.chn.toInt()}")
                                         .setAutoCancel(true)
@@ -134,7 +134,7 @@ class MyService : LifecycleService() {
                 val active = hour.format(System.currentTimeMillis())
                 Thread.sleep(1000)
                 //  判断是否为整点 测试时为每分钟的第15 50秒发起一次网络请求
-                if (active == "00") {
+                if (active == "10" || active == "30" || active == "50") {
                     Log.d("Service_rain", "$time $active yes")
                     viewModel.apply {
                         getSharedPreferences("phoneLocation", Context.MODE_PRIVATE)?.also {
@@ -151,23 +151,37 @@ class MyService : LifecycleService() {
                                     Log.d("Service_probability", weather.rainInfo.probability.toString())
 
                                     //  下雨概率大于0.5才会发送通知
-                                    if (weather.rainInfo.probability[0] +1 > 0.5
+                                    if (weather.rainInfo.probability[0] > 0.5
                                         || weather.rainInfo.probability[1] > 0.5
                                         || weather.rainInfo.probability[2] > 0.5
                                         || weather.rainInfo.probability[3] > 0.5
                                     ) {
                                         val notification = NotificationCompat.Builder(
-                                        this@MyService,
-                                        "rain"
-                                    )
-                                        .setSmallIcon(getSky(weather.realtime.skycon).icon)
-                                        .setContentTitle("$placeName 降雨提醒")
-                                        .setContentText("未来两小时内可能会有降雨，记得带伞")
-                                        .setAutoCancel(true)
-                                        .setWhen(System.currentTimeMillis())
-                                        .setOngoing(false)
-                                        .build()
-                                    manager.notify(3, notification)
+                                            this@MyService,
+                                            "rain"
+                                        )
+                                            .setSmallIcon(getSky(weather.realtime.skycon).icon)
+                                            .setContentTitle("$placeName 降雨提醒")
+                                            .setContentText("未来两小时内可能会有降雨，记得带伞" )
+//                                            .setContentText(weather.rainInfo.probability.toString())
+                                            .setAutoCancel(true)
+                                            .setWhen(System.currentTimeMillis())
+                                            .setOngoing(false)
+                                            .build()
+                                        manager.notify(3, notification)
+                                    } else {
+                                        val notification = NotificationCompat.Builder(
+                                            this@MyService,
+                                            "rain"
+                                        )
+                                            .setSmallIcon(getSky(weather.realtime.skycon).icon)
+                                            .setContentTitle("$placeName 降雨概率")
+                                            .setContentText(weather.rainInfo.probability.toString())
+                                            .setAutoCancel(true)
+                                            .setWhen(System.currentTimeMillis())
+                                            .setOngoing(false)
+                                            .build()
+                                        manager.notify(3, notification)
                                     }
 
                                 }
